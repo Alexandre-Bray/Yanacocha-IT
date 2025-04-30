@@ -1,4 +1,5 @@
-import pathlib
+import os
+import glob
 import pandas
 import datetime
 
@@ -6,11 +7,8 @@ def return_sorted_files(folder):
     """
     Gather all csv files from a folder and sorts them by their indexing number
     """
-    # Convert folder to Path object
-    folder_path = pathlib.Path(folder)
-    
-    # Gather all .csv files
-    files = list(folder_path.glob("*.csv"))
+    # Gather all .csv files using glob
+    files = glob.glob(os.path.join(folder, "*.csv"))
     
     # Create temporary holding variable
     unsorted_files = {}
@@ -18,7 +16,7 @@ def return_sorted_files(folder):
     # Sort them by index
     for file in files:
         # Get filename without path
-        filename = file.name
+        filename = os.path.basename(file)
         components = filename.split('.csv')[0].split('-')
         
         if len(components) == 4:
@@ -26,7 +24,7 @@ def return_sorted_files(folder):
         else:
             unsorted_files[0] = file
     
-    # Sort files by index and return as list of Path objects
+    # Sort files by index and return as list
     sorted_files = [unsorted_files[i] for i in sorted(unsorted_files.keys())]
     
     return sorted_files
@@ -81,7 +79,7 @@ def load_data(experiment):
         else:
             # Delete all files
             for file in files:
-                file.unlink()
+                os.remove(file)
             
             # Save combined data as a single file
             data.to_csv(files[0])
@@ -102,7 +100,7 @@ def load_data(experiment):
             data = pandas.read_csv(file, skiprows=2)
             
             # Delete the file
-            file.unlink()
+            os.remove(file)
             
             # Save data in new format
             data.to_csv(file)
@@ -111,19 +109,27 @@ def load_data(experiment):
 
 def get_IT_list(site):
     """
-    Returns a sorted list of directories in the site folder by date
+    Returns a sorted list of directories in the site folder by date, with experiment names
     """
-    # Convert site to Path object
-    site_path = pathlib.Path(site)
-    
     # Gather directories
-    directories = [d for d in site_path.iterdir() if d.is_dir()]
+    directories = [os.path.join(site, d) for d in os.listdir(site) if os.path.isdir(os.path.join(site, d))]
     
-    # Extract dates from directory names
-    date_list = [d.name for d in directories]
+    # Extract experiment names and dates
+    experiment_names = []
+    date_list = []
+    
+    for path in directories:
+        # Extract experiment name from the last component of the path
+        experiment_name = os.path.basename(path)
+        experiment_names.append(experiment_name)
+        date_list.append(experiment_name)
     
     # Convert strings to datetime objects
-    datetime_list = [datetime.datetime.strptime(date, '%B-%y') for date in date_list]
+    try:
+        datetime_list = [datetime.datetime.strptime(date, '%B-%y') for date in date_list]
+    except ValueError as e:
+        print(f"Error parsing dates: {e}")
+        return [], []
     
     # Sort by date
     sorted_dates = sorted(datetime_list)
@@ -132,6 +138,35 @@ def get_IT_list(site):
     sorted_formatted_dates = [date.strftime('%B-%y').upper() for date in sorted_dates]
     
     # Create sorted directory paths
-    sorted_directories = [site_path / date for date in sorted_formatted_dates]
+    sorted_directories = [os.path.join(site, date) for date in sorted_formatted_dates]
     
-    return sorted_directories
+    return sorted_directories, experiment_names
+
+def process_experiments(site):
+    """
+    Process experiments and extract names, demonstrating correct path handling with os
+    """
+    # Get sorted directories and experiment names
+    sorted_directories, experiment_names = get_IT_list(site)
+    
+    # Initialize lists for processing
+    processed_experiments = []
+    processed_names = []
+    
+    # Iterate over directories
+    for experiment_number, path in enumerate(sorted_directories, start=1):
+        # Assign experiment ID
+        experiment_id = experiment_number
+        
+        # Extract experiment name from the path
+        experiment_name = os.path.basename(path)
+        
+        # Append to lists
+        processed_names.append(experiment_name)
+        processed_experiments.append({
+            'id': experiment_id,
+            'name': experiment_name,
+            'path': path
+        })
+    
+    return processed_experiments, processed_names
