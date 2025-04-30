@@ -2,9 +2,9 @@
 
 ## Resumen / Overview
 
-**Español**: <span style="color: blue;">Este proyecto procesa datos experimentales de experimentos de filtración por membranas en el sitio YANACOCHA/data. El código carga datos de experimentos, aplica correcciones de conductividad y/o temperatura a las mediciones de presión del concentrado y genera gráficos de caja de los valores de presión corregidos al 30% de recuperación. El proyecto está escrito en Python y utiliza bibliotecas como Pandas y Matplotlib, junto con módulos personalizados (misc, preprocessing, integrity).</span>
+**Español**: <span style="color: blue;">Este proyecto procesa datos experimentales de experimentos de filtración por membranas en el sitio DATA. El código carga datos de experimentos, aplica correcciones de conductividad y/o temperatura a las mediciones de presión del concentrado y genera gráficos de caja de los valores de presión corregidos al 30% de recuperación. El proyecto está escrito en Python y utiliza bibliotecas como Pandas y Matplotlib, junto con módulos personalizados (misc, preprocessing, integrity).</span>
 
-**English**: This project processes experimental data from membrane filtration experiments at the YANACOCHA/data site. The code loads experiment data, applies conductivity and/or temperature corrections to concentrate pressure measurements, and generates boxplot visualizations of the corrected pressure values at 30% recovery. The project is written in Python and uses libraries such as Pandas and Matplotlib, along with custom modules (misc, preprocessing, integrity).
+**English**: This project processes experimental data from membrane filtration experiments at the DATA site. The code loads experiment data, applies conductivity and/or temperature corrections to concentrate pressure measurements, and generates boxplot visualizations of the corrected pressure values at 30% recovery. The project is written in Python and uses libraries such as Pandas and Matplotlib, along with custom modules (misc, preprocessing, integrity).
 
 ---
 
@@ -306,7 +306,7 @@
 
 - **Asegurar Dependencias**:
   - Verifica que los módulos `misc`, `preprocessing` y `integrity` estén presentes en el directorio del proyecto.
-  - Confirma que los datos experimentales (directorios bajo `YANACOCHA/data`) sean accesibles. Actualiza la variable `site` en el código si los datos están en otra ubicación.
+  - Confirma que los datos experimentales (directorios bajo `DATA`) sean accesibles. Actualiza la variable `site` en el código si los datos están en otra ubicación.
 
 - **Ejecutar el Script**:
   - Abre el script principal de Python (por ejemplo, `main.py`) en VS Code.
@@ -326,7 +326,7 @@
 
 - **Ensure Dependencies**:
   - Verify that the `misc`, `preprocessing`, and `integrity` modules are present in the project directory.
-  - Confirm that the experiment data (directories under `YANACOCHA/data`) are accessible. Update the `site` variable in the code if the data is stored elsewhere.
+  - Confirm that the experiment data (directories under `DATA`) are accessible. Update the `site` variable in the code if the data is stored elsewhere.
 
 - **Run the Script**:
   - Open the main Python script (e.g., `main.py`) in VS Code.
@@ -363,7 +363,7 @@
   - Asegúrate de que estos archivos Python estén en el directorio del proyecto.
 
 - **Datos No Encontrados**:
-  - Verifica que los directorios de datos experimentales existan y sean accesibles en la ruta especificada en la variable `site` (`YANACOCHA/data`).
+  - Verifica que los directorios de datos experimentales existan y sean accesibles en la ruta especificada en la variable `site` (`DATA`).
   - Actualiza la ruta de `site` en el código si es necesario.
 
 - **Problemas con la Ruta de Python**:
@@ -391,7 +391,7 @@
   - Ensure these Python files are in the project directory.
 
 - **Data Not Found**:
-  - Verify that the experiment data directories exist and are accessible at the path specified in the `site` variable (`YANACOCHA/data`).
+  - Verify that the experiment data directories exist and are accessible at the path specified in the `site` variable (`DATA`).
   - Update the `site` path in the code if necessary.
 
 - **Python Path Issues**:
@@ -411,7 +411,7 @@
 ├── integrity.py            # Módulo personalizado para correcciones de datos / Custom module for data corrections
 ├── README.md               # Este archivo / This file
 ├── venv/                   # Carpeta del entorno virtual (creada localmente) / Virtual environment folder (created locally)
-└── YANACOCHA/data/         # Directorios de datos experimentales / Experiment data directories
+└── DATA/                   # Directorios de datos experimentales / Experiment data directories
 ```
 
 ---
@@ -421,7 +421,7 @@
 **Español**: <span style="color: blue;">
 
 - Los módulos personalizados (`misc`, `preprocessing`, `integrity`) son archivos Python incluidos en el repositorio y son esenciales para que el código funcione.
-- El código asume acceso a datos experimentales en la estructura de directorios `YANACOCHA/data`. Asegúrate de que los datos estén formateados correctamente y sean accesibles.
+- El código asume acceso a datos experimentales en la estructura de directorios `DATA`. Asegúrate de que los datos estén formateados correctamente y sean accesibles.
 - Para conjuntos de datos grandes, monitorea el uso de memoria, ya que cargar múltiples archivos de experimentos puede ser intensivo en recursos.
 
 </span>
@@ -429,7 +429,7 @@
 **English**:
 
 - The custom modules (`misc`, `preprocessing`, `integrity`) are Python files included in the repository and are critical for the code to function.
-- The code assumes access to experiment data in the `YANACOCHA/data` directory structure. Ensure the data is properly formatted and accessible.
+- The code assumes access to experiment data in the `DATA` directory structure. Ensure the data is properly formatted and accessible.
 - For large datasets, monitor memory usage, as loading multiple experiment files may be resource-intensive.
 
 ---
