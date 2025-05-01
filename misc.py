@@ -109,12 +109,14 @@ def load_data(experiment):
 
 def get_IT_list(site):
     """
-    Returns a sorted list of directories in the site folder by date, with experiment names
+    Returns a sorted list of directories in the site folder by date and number suffix,
+    with experiment names. Supports names like 'May-01', 'MAY-01=1', 'APRIL-30=2_OVERNIGHT'.
+    Sorts primarily by date, secondarily by number after '='.
     """
     # Gather directories
     directories = [os.path.join(site, d) for d in os.listdir(site) if os.path.isdir(os.path.join(site, d))]
     
-    # Extract experiment names and dates
+    # Extract experiment names, dates, and numbers
     experiment_info = []
     current_year = datetime.datetime.now().year  # Use current year (2025)
     
@@ -122,23 +124,50 @@ def get_IT_list(site):
         # Extract experiment name from the last component of the path
         experiment_name = os.path.basename(path)
         try:
-            # Parse the date from the experiment name (e.g., 'MAY-01' as May 1st)
-            # Normalize case for parsing (e.g., 'MAY-01' to 'May-01')
-            normalized_name = experiment_name.title()  # Converts 'MAY-01' to 'May-01'
-            date = datetime.datetime.strptime(normalized_name, '%B-%d')
+            # Replace underscores with hyphens for consistency
+            normalized_name = experiment_name.replace('_', '-')
+            # Split on '=' to separate date and number parts
+            parts = normalized_name.split('=')
+            if len(parts) < 1:
+                raise ValueError("Experiment name does not contain a valid format")
+            
+            # Get the date part (before '=' or entire name if no '=')
+            date_part = parts[0]
+            # Split date part on '-' to get month and day
+            date_components = date_part.split('-')
+            if len(date_components) < 2:
+                raise ValueError("Experiment name does not contain a valid date format")
+            
+            # Construct date string (e.g., 'APRIL-30')
+            date_str = f"{date_components[0]}-{date_components[1]}"
+            # Normalize case for parsing (e.g., 'APRIL-30' to 'April-30')
+            normalized_date = date_str.title()
+            date = datetime.datetime.strptime(normalized_date, '%B-%d')
             # Assign the current year to the date
             date = date.replace(year=current_year)
+            
+            # Extract number after '=' if present, default to 0
+            number = 0
+            if len(parts) > 1:
+                # Take the part after '=' and before any additional '-' (e.g., '2-OVERNIGHT' -> '2')
+                number_part = parts[1].split('-')[0]
+                try:
+                    number = int(number_part)
+                except ValueError:
+                    raise ValueError(f"Invalid number format in '{experiment_name}'")
+            
             experiment_info.append({
                 'name': experiment_name,  # Preserve original name
                 'date': date,
+                'number': number,
                 'path': path
             })
         except ValueError as e:
-            print(f"Warning: Could not parse date from '{experiment_name}'. Skipping. Error: {e}")
+            print(f"Warning: Could not parse date or number from '{experiment_name}'. Skipping. Error: {e}")
             continue
     
-    # Sort by date (chronologically)
-    sorted_info = sorted(experiment_info, key=lambda x: x['date'])
+    # Sort by date (primary) and number (secondary)
+    sorted_info = sorted(experiment_info, key=lambda x: (x['date'], x['number']))
     
     # Extract sorted directories and experiment names
     sorted_directories = [info['path'] for info in sorted_info]
@@ -174,3 +203,9 @@ def process_experiments(site):
         })
     
     return processed_experiments, processed_names
+
+def format_names(experiment_names):
+    names = list()
+    for name in experiment_names:
+        names.append('\n'.join(name.split('_')))
+    return names
