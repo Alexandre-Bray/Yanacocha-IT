@@ -74,3 +74,49 @@ def load_experiment(experiment):
             cycle[f'Relative {time}'] = cycle[f'Elapsed {time}']-cycle[f'Elapsed {time}'].iloc[0]
 
     return data, cycles
+
+
+def apply_pressure_correction(cycle,conductivity_compensation=True,temperature_compensation=True, model='ratio'):
+    """
+    Applies conductivity and temperature compensation to concentrate pressure.
+    """
+    import compensation
+    
+    # Apply conductivity correction only if enabled and temperature correction is disabled
+    if conductivity_compensation and not temperature_compensation:
+        cycle['Corrected Concentrate Pressure (psi)'] = compensation.conductivity_correction(
+            cycle['Concentrate Conductivity (mS/cm)'],
+            cycle['Concentrate Pressure (psi)'], model=model)
+
+    # Apply temperature correction only if enabled and conductivity correction is disabled
+    elif not conductivity_compensation and temperature_compensation:
+        cycle['Corrected Concentrate Pressure (psi)'] = compensation.temperature_correction(
+            cycle['Concentrate Temperature (C)'],
+            cycle['Concentrate Pressure (psi)'],
+            model=model)
+
+    # Apply both conductivity and temperature corrections if both are enabled
+    elif conductivity_compensation and temperature_compensation:
+        cycle['Corrected Concentrate Pressure (psi)'] = compensation.normalize_concentrate_pressure(
+            cycle['Concentrate Temperature (C)'],
+            cycle['Concentrate Conductivity (mS/cm)'],
+            cycle['Concentrate Pressure (psi)'], model=model)
+    # If no corrections are applied, use the raw concentrate pressure
+    else:
+        cycle['Corrected Concentrate Pressure (psi)'] = cycle['Concentrate Pressure (psi)']
+    
+    return cycle
+
+def apply_pressure_correction_all_cycles(cycles, exclude, conductivity_compensation=True, temperature_compensation=True, model='ratio'):
+    """
+    Applies Pressure Compensation on all cycles
+    """
+    for i, cycle in enumerate(cycles):
+        # Skip cycles marked for exclusion
+        if i in exclude:
+            continue
+        else:
+            # Attempt to apply corrections and extract data
+            apply_pressure_correction(cycle,conductivity_compensation,temperature_compensation,model)
+
+    return cycles

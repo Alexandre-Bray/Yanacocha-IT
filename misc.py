@@ -115,30 +115,34 @@ def get_IT_list(site):
     directories = [os.path.join(site, d) for d in os.listdir(site) if os.path.isdir(os.path.join(site, d))]
     
     # Extract experiment names and dates
-    experiment_names = []
-    date_list = []
+    experiment_info = []
+    current_year = datetime.datetime.now().year  # Use current year (2025)
     
     for path in directories:
         # Extract experiment name from the last component of the path
         experiment_name = os.path.basename(path)
-        experiment_names.append(experiment_name)
-        date_list.append(experiment_name)
+        try:
+            # Parse the date from the experiment name (e.g., 'MAY-01' as May 1st)
+            # Normalize case for parsing (e.g., 'MAY-01' to 'May-01')
+            normalized_name = experiment_name.title()  # Converts 'MAY-01' to 'May-01'
+            date = datetime.datetime.strptime(normalized_name, '%B-%d')
+            # Assign the current year to the date
+            date = date.replace(year=current_year)
+            experiment_info.append({
+                'name': experiment_name,  # Preserve original name
+                'date': date,
+                'path': path
+            })
+        except ValueError as e:
+            print(f"Warning: Could not parse date from '{experiment_name}'. Skipping. Error: {e}")
+            continue
     
-    # Convert strings to datetime objects
-    try:
-        datetime_list = [datetime.datetime.strptime(date, '%B-%y') for date in date_list]
-    except ValueError as e:
-        print(f"Error parsing dates: {e}")
-        return [], []
+    # Sort by date (chronologically)
+    sorted_info = sorted(experiment_info, key=lambda x: x['date'])
     
-    # Sort by date
-    sorted_dates = sorted(datetime_list)
-    
-    # Convert back to original format
-    sorted_formatted_dates = [date.strftime('%B-%y').upper() for date in sorted_dates]
-    
-    # Create sorted directory paths
-    sorted_directories = [os.path.join(site, date) for date in sorted_formatted_dates]
+    # Extract sorted directories and experiment names
+    sorted_directories = [info['path'] for info in sorted_info]
+    experiment_names = [info['name'] for info in sorted_info]
     
     return sorted_directories, experiment_names
 
