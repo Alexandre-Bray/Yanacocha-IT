@@ -474,14 +474,6 @@
 
 ---
 
-## Licencia / License
-
-**Español**: <span style="color: blue;">Este proyecto está licenciado bajo la Licencia MIT (o especifica la licencia adecuada si es diferente).</span>
-
-**English**: This project is licensed under the MIT License (or specify the appropriate license if different).
-
----
-
 ## Contacto / Contact
 
 **Español**: <span style="color: blue;">Para problemas o preguntas, contacta al mantenedor del repositorio o abre un issue en el rastreador de issues del repositorio.</span>
