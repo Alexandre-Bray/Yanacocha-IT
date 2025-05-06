@@ -11,6 +11,8 @@ def calculate_statistics(channels, site, recovery=30, exclude = [],conductivity_
     # Retrieve a list of directories (experiments) for the specified site using a custom function
     directories, _ = misc.get_IT_list(site)
 
+    datasets = dict()
+
     # Iterate through each directory, assigning an experiment number and extracting data
     for experiment_number, path in enumerate(directories):
         # Assign the current experiment number as the ID
@@ -66,4 +68,6 @@ def calculate_statistics(channels, site, recovery=30, exclude = [],conductivity_
 
         # Append the summary DataFrame to the list of experiment summaries
         experiment_summaries.append(summary)
-    return experiment_summaries, experiment_names
+
+        datasets[experiment_name] = data
+    return experiment_summaries, experiment_names, datasets
