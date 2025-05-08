@@ -209,3 +209,5 @@ def format_names(experiment_names):
     for name in experiment_names:
         names.append('\n'.join(name.split('_')))
     return names
+
+extract_units = lambda x: x.split('(')[-1].split(')')[0]

@@ -35,6 +35,12 @@ def calculate_statistics(channels, site, recovery=30, exclude = [],conductivity_
                                                                     conductivity_compensation, 
                                                                     temperature_compensation, 
                                                                     model)
+        
+        # Calculate Permeate Ratio
+        for cycle in cycles:
+            P1 = cycle['Permeate 1 Flow (L/min)']
+            P3 = cycle['Permeate 3 Flow (L/min)']
+            cycle['Permeate Ratio (x/P1)'] = P1/P3
 
         # Iterate through each specified channel to process data
         datapoints = dict()
