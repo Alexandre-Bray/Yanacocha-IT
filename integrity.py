@@ -77,3 +77,8 @@ def calculate_statistics(channels, site, recovery=30, exclude = [],conductivity_
 
         datasets[experiment_name] = data
     return experiment_summaries, experiment_names, datasets
+
+def days_until_clean(val1, val2, clean_val=100):
+    big = max([val1,val2])
+    smol = min([val1, val2])
+    return round((clean_val-big)/(big-smol)), round(big-smol,3)
