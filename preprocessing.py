@@ -116,6 +116,11 @@ def apply_pressure_correction_all_cycles(cycles, exclude, conductivity_compensat
         if i in exclude:
             continue
         else:
+
+            cycle['Permeate Conductivity (mS/cm)'] = cycle['Permeate Conductivity (uS/cm)']
+
+            cycle['Permeate Flow (L/min)']=cycle['Permeate 1 Flow (L/min)']+cycle['Permeate 2 Flow (L/min)']+cycle['Permeate 3 Flow (L/min)']
+
             # Attempt to apply corrections and extract data
             apply_pressure_correction(cycle,conductivity_compensation,temperature_compensation,model)
 

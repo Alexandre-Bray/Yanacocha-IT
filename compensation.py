@@ -1,3 +1,13 @@
+
+temperature_compensation_values = (-7.0603196042813465, 304.6208427571597)
+
+"""
+(Slope, Intercept)
+Values from test in Golden, CO (GRL138) February 2025
+"""
+conductivity_compensation_values = (6.10587651312185, 61.63512345974522)
+
+
 def normalize_concentrate_pressure(temperature, conductivity, pressure, model='linear'):
     """
     Temperature and Conductivity normalization for concentrate pressure 
@@ -328,8 +338,8 @@ def conductivity_pressure_correction_ratio(conductivity, pressure, reference_con
         raise ValueError("Conductivity must be non-negative.")
 
     # Model pressure at reference conductivity
-    P_ref = slope * reference_conductivity + intercept  # ~86.96 at 5 mS/cm
-
+    P_ref = slope * reference_conductivity + intercept 
+    
     # Model pressure at measured conductivity
     P_meas = slope * conductivity + intercept
 
